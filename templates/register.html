@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Create Account | Gameplan Apparel{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-shell auth-signup">
+    <aside class="auth-visual">
+      <a class="auth-brand" href="{{ url_for('home') }}" aria-label="Gameplan Apparel home">
+        <span class="brand-mark">GP</span>
+        <span class="brand-copy"><strong>GAMEPLAN</strong><small>APPAREL CO.</small></span>
+      </a>
+      <div class="auth-visual-copy">
+        <p class="auth-kicker">MAKE YOUR OWN GAMEPLAN</p>
+        <h2>Start your<br>next chapter.</h2>
+        <p>Create an account to save your details and follow your orders.</p>
+      </div>
+      <div class="auth-visual-note"><span>02</span><span>JOIN THE COMMUNITY</span><i></i></div>
+    </aside>
+
+    <div class="auth-content">
+      <nav class="auth-tabs" aria-label="Account access">
+        <a href="{{ url_for('login') }}">Sign in</a>
+        <a class="is-active" href="{{ url_for('register') }}" aria-current="page">Create account</a>
+      </nav>
+      <div class="auth-intro">
+        <p class="auth-kicker">CUSTOMER ACCOUNT</p>
+        <h1>Create your account</h1>
+        <p>It only takes a moment to get started.</p>
+      </div>
+
+      <form class="form-panel auth-panel" method="post" action="{{ url_for('register') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="name">Full name</label>
+        <input id="name" name="name" required maxlength="100" autocomplete="name" placeholder="Your full name" value="{{ request.form.get('name', '') }}">
+
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com" value="{{ request.form.get('email', '') }}">
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required minlength="10" autocomplete="new-password" placeholder="At least 10 characters">
+        <small class="auth-help">Use at least 10 characters.</small>
+
+        <button class="button button-dark button-full auth-submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="auth-footnote">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

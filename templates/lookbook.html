@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Lookbook | Gameplan Apparel{% endblock %}
+{% block content %}
+<section class="lookbook-page">
+  <header class="lookbook-hero">
+    <div class="page-wrap lookbook-hero-content">
+      <p class="eyebrow">GAMEPLAN APPAREL CO.</p>
+      <h1>THE LOOKBOOK</h1>
+      <p>See the latest Gameplan looks, made for your everyday game.</p>
+    </div>
+  </header>
+
+  <section class="page-wrap lookbook-gallery" aria-label="Lookbook videos">
+    <div class="lookbook-section-heading">
+      <div>
+        <p class="eyebrow">WATCH THE COLLECTION</p>
+        <h2>Gameplan in Motion</h2>
+      </div>
+      <a class="lookbook-shop-link" href="{{ url_for('shop') }}">Shop the collection <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="lookbook-grid">
+      {% for number in range(1, 4) %}
+      <article class="lookbook-card">
+        <div class="lookbook-video-frame">
+          {# Add one or more <source> elements inside the video when the clips are ready. #}
+          <video controls preload="none" aria-label="Gameplan lookbook video {{ "%02d"|format(number) }}"></video>
+          <div class="lookbook-video-placeholder" aria-hidden="true">
+            <span class="lookbook-play-icon">▷</span>
+            <span>VIDEO {{ "%02d"|format(number) }}</span>
+          </div>
+        </div>
+        <div class="lookbook-card-caption">
+          <span>GAMEPLAN APPAREL</span>
+          <h3>Lookbook Film {{ "%02d"|format(number) }}</h3>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endblock %}

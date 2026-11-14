@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Collection | Gameplan Apparel{% endblock %}
+{% block content %}
+<section class="collection-page">
+  <header class="collection-hero page-wrap">
+    <div class="collection-hero-copy">
+      <span class="collection-hero-mark" aria-hidden="true">///</span>
+      <h1>COLLECTION</h1>
+      <p>Explore our latest drops and timeless streetwear<br class="collection-desktop-break"> pieces, designed for everyday style and comfort.</p>
+    </div>
+  </header>
+
+  <nav class="collection-tabs page-wrap" aria-label="Product collections">
+    {% set collection_tabs = [
+      ('', 'All Collection', '◇'),
+      ('T-Shirts', 'T-Shirts', '♧'),
+      ('Hoodies', 'Hoodies', '♧'),
+      ('Pants', 'Pants', '▤'),
+      ('Accessories', 'Accessories', '⌂')
+    ] %}
+    {% for category, label, icon in collection_tabs %}
+      <a class="collection-tab{% if selected_category == category %} is-active{% endif %}"
+         href="{{ url_for('collections', category=category) if category else url_for('collections') }}"
+         {% if selected_category == category %}aria-current="page"{% endif %}>
+        <span aria-hidden="true">{{ icon }}</span>{{ label }}
+      </a>
+    {% endfor %}
+  </nav>
+
+  <section class="collection-layout page-wrap">
+    <aside class="collection-filter-panel">
+      <form method="get" action="{{ url_for('collections') }}">
+        <input type="hidden" name="sort" value="{{ selected_sort }}">
+        {% if search %}<input type="hidden" name="q" value="{{ search }}">{% endif %}
+        <div class="collection-filter-heading">
+          <h2><span aria-hidden="true">☷</span> Filter</h2>
+        </div>
+        <fieldset class="collection-filter-group">
+          <legend>Category</legend>
+          <label><input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %}><span>All Collection</span></label>
+          {% for category in categories %}
+            <label><input type="radio" name="category" value="{{ category }}" {% if category == selected_category %}checked{% endif %}><span>{{ category }}</span></label>
+          {% endfor %}
+        </fieldset>
+        <fieldset class="collection-filter-group">
+          <legend>Size</legend>
+          <div class="collection-size-options">
+            {% for size in ('S', 'M', 'L') %}
+              <label><input type="radio" name="size" value="{{ size }}" {% if selected_size == size %}checked{% endif %}><span>{{ size }}</span></label>
+            {% endfor %}
+          </div>
+          <small class="collection-filter-note">Available sizes for tees</small>
+        </fieldset>
+        <fieldset class="collection-filter-group collection-price-filter">
+          <legend>Price Range</legend>
+          <div class="collection-price-fields">
+            <label for="collection-min-price">Min<input id="collection-min-price" type="number" name="min_price" min="0" step="50" value="{{ request.args.get('min_price', '') }}" placeholder="₱200"></label>
+            <span aria-hidden="true">—</span>
+            <label for="collection-max-price">Max<input id="collection-max-price" type="number" name="max_price" min="0" step="50" value="{{ request.args.get('max_price', '') }}" placeholder="₱2,500"></label>
+          </div>
+        </fieldset>
+        <button class="button button-light button-full collection-filter-submit" type="submit">Apply Filter</button>
+        <a class="collection-clear-filter" href="{{ url_for('collections') }}">Clear filters</a>
+      </form>
+    </aside>
+
+    <div class="collection-results">
+      <div class="collection-results-toolbar">
+        <div>
+          <p class="eyebrow">GAMEPLAN APPAREL</p>
+          <h2>{{ selected_category or 'All Collection' }}</h2>
+          <p class="collection-result-count">{{ products|length }} items</p>
+        </div>
+        <form class="collection-sort" method="get" action="{{ url_for('collections') }}">
+          {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+          {% if selected_size %}<input type="hidden" name="size" value="{{ selected_size }}">{% endif %}
+          {% if search %}<input type="hidden" name="q" value="{{ search }}">{% endif %}
+          {% if request.args.get('min_price') %}<input type="hidden" name="min_price" value="{{ request.args.get('min_price') }}">{% endif %}
+          {% if request.args.get('max_price') %}<input type="hidden" name="max_price" value="{{ request.args.get('max_price') }}">{% endif %}
+          <label for="collection-sort">Sort by</label>
+          <select id="sort-products" name="sort">
+            <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Featured</option>
+            <option value="price-low" {% if selected_sort == 'price-low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price-high" {% if selected_sort == 'price-high' %}selected{% endif %}>Price: High to Low</option>
+          </select>
+        </form>
+      </div>
+
+      {% if products %}
+      <div class="collection-product-grid">
+        {% for product in products %}
+          {% include "_product_card.html" %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="collection-empty-state">
+        <span aria-hidden="true">◇</span>
+        <h3>No pieces in this collection yet</h3>
+        <p>Try another category or clear your filters to see all available products.</p>
+        <a class="button button-outline" href="{{ url_for('collections') }}">View all collection</a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</section>
+{% endblock %}

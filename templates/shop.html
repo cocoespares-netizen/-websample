@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Shop | Gameplan Apparel{% endblock %}
+{% block content %}
+<section class="shop-hero shop-collection-hero">
+  <div>
+    <p class="eyebrow">PRODUCT COLLECTION</p>
+    <h1>SHOP COLLECTION</h1>
+    <p>Streetwear essentials for your everyday game.</p>
+  </div>
+</section>
+<section class="shop-layout page-wrap">
+  <aside class="filters">
+    <h2>Filters <span aria-hidden="true">☷</span></h2>
+    <form method="get" action="{{ url_for('shop') }}">
+      <input type="hidden" name="sort" value="{{ selected_sort }}">
+      {% if selected_color %}<input type="hidden" name="color" value="{{ selected_color }}">{% endif %}
+      <fieldset class="filter-group category-filter" id="collection-filters">
+        <legend>Category</legend>
+        <label><input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %}><span>All Products</span></label>
+        {% for category in categories %}
+          <label><input type="radio" name="category" value="{{ category }}" {% if category == selected_category %}checked{% endif %}><span>{{ category }}</span></label>
+        {% endfor %}
+      </fieldset>
+      <label class="filter-label" for="filter-search">Search</label>
+      <input id="filter-search" type="search" name="q" value="{{ search }}" placeholder="Find your next favorite">
+      <div class="price-fields">
+        <label>Min price<input type="number" name="min_price" min="0" step="50" placeholder="₱0" value="{{ request.args.get('min_price', '') }}"></label>
+        <label>Max price<input type="number" name="max_price" min="0" step="50" placeholder="₱1,000" value="{{ request.args.get('max_price', '') }}"></label>
+      </div>
+      <button class="button button-light button-full" type="submit">Apply filters</button>
+      <a class="clear-filters" href="{{ url_for('shop') }}">Clear all</a>
+    </form>
+  </aside>
+  <div class="shop-results">
+    <div class="section-heading shop-toolbar">
+      <div>
+        <h2>{{ selected_category or 'All Products' }}</h2>
+        <p>No products available right now</p>
+      </div>
+      <div class="shop-controls">
+        <form class="sort-control" method="get" action="{{ url_for('shop') }}">
+          {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+          {% if search %}<input type="hidden" name="q" value="{{ search }}">{% endif %}
+          {% if request.args.get('min_price') %}<input type="hidden" name="min_price" value="{{ request.args.get('min_price') }}">{% endif %}
+          {% if request.args.get('max_price') %}<input type="hidden" name="max_price" value="{{ request.args.get('max_price') }}">{% endif %}
+          {% if selected_color %}<input type="hidden" name="color" value="{{ selected_color }}">{% endif %}
+          <label for="sort-products">Sort by</label>
+          <select id="sort-products" name="sort">
+            <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+            <option value="price-low" {% if selected_sort == 'price-low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price-high" {% if selected_sort == 'price-high' %}selected{% endif %}>Price: High to Low</option>
+          </select>
+        </form>
+        <div class="view-toggle" role="group" aria-label="Product layout">
+          <button type="button" class="view-toggle-button is-active" data-view="grid" aria-label="Grid view" aria-pressed="true">▦</button>
+          <button type="button" class="view-toggle-button" data-view="list" aria-label="List view" aria-pressed="false">☷</button>
+        </div>
+      </div>
+    </div>
+    <div class="empty-state"><h3>Our shop is getting ready</h3><p>There are no products available at the moment. Please check back soon.</p></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,22 @@
+<article class="product-card{% if request.endpoint == 'shop' %} shop-product-card{% elif request.endpoint == 'home' %} home-product-card{% elif request.endpoint == 'collections' %} collection-product-card{% endif %}">
+  <a class="product-image" href="{{ url_for('product_detail', product_id=product.id) }}">
+    {% if request.endpoint in ('home', 'shop', 'collections') %}<span class="product-badge">New</span>{% elif product.featured %}<span class="product-badge">Featured</span>{% endif %}
+    <img src="{{ product.image_url or url_for('static', filename='img/product-placeholder.svg') }}" alt="{{ product.name }}" loading="lazy">
+  </a>
+  {% if request.endpoint in ('shop', 'home', 'collections') %}<button class="favorite-toggle" type="button" aria-label="Add {{ product.name }} to favorites" aria-pressed="false">♡</button>{% endif %}
+  <div class="product-info">
+    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="product-name">{{ product.name }}</a>
+    <span class="product-category">{{ product.category }}</span>
+    <strong class="product-price">₱{{ "%.2f"|format(product.price) }}</strong>
+    {% if product.stock > 0 and product.category == 'T-Shirts' %}
+      <a class="button button-dark button-small{% if request.endpoint in ('shop', 'home', 'collections') %} shop-select-options{% endif %}" href="{{ url_for('product_detail', product_id=product.id) }}" aria-label="Choose size for {{ product.name }}">♧</a>
+    {% elif product.stock > 0 %}
+      <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}"{% if request.endpoint in ('shop', 'collections') %} class="shop-add-form"{% endif %}>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="button button-dark button-small" type="submit" aria-label="Add {{ product.name }} to bag">{% if request.endpoint == 'shop' %}♧{% else %}♧ &nbsp;Add to Bag{% endif %}</button>
+      </form>
+    {% else %}
+      <button class="button button-muted button-small" disabled>Sold Out</button>
+    {% endif %}
+  </div>
+</article>
